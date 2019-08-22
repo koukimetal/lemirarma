@@ -14,15 +14,20 @@ export const App: React.SFC<{}> = props => {
                 console.log(doc);
                 console.log(doc.querySelectorAll('.rc'));
                 doc.querySelectorAll('.rc').forEach(elems => {
-                    const anchor = elems.querySelector('.r a');
-                    if (anchor) {
+                    try {
+                        const anchor = elems.querySelector('.r a');
                         const link = anchor.getAttribute('href');
-                        if (link) {
-                            if (link.includes('indeed')) {
-                                const rate = elems.querySelector('.s .slp').textContent;
-                                setResp(link + '\n' + rate);
-                            }
+                        if (link.includes('indeed')) {
+                            const rateText = elems.querySelector('.s .slp').textContent;
+                            const ratingMatchText = rateText.match(/[0-9]\.[0-9]+/)[0];
+                            const reviewRating = parseFloat(ratingMatchText);
+                            const textWithoutRating = rateText.replace(ratingMatchText, '');
+                            const reviewNum = parseInt(textWithoutRating.match(/[0-9]+/)[0]);
+                            console.log(reviewRating, reviewNum);
+                            setResp(reviewRating + " " + reviewNum + "\n");
                         }
+                    } catch (e) {
+                        console.log(e);
                     }
                 })
             })
